@@ -1,0 +1,1 @@
+new DataTable("#jquery-table");
