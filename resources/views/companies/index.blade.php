@@ -27,7 +27,9 @@
                 <tr>
                     <th>Company Name</th>
                     <th>Date Registered</th>
-                    <th>Action</th>
+                    @if (request()->user()->hasRole('admin'))
+                        <th>Action</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -160,3 +162,4 @@
         </div>
     </div>
 </x-app-layout>
+

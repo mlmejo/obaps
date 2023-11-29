@@ -11,8 +11,10 @@
         <p class="mt-2 mb-0 text-muted">Requesting Company: {{ $project->company->name }}</p>
         <p class="mt-2 mb-0">
             Status:
-            @if ($project->status == 'ongoing')
-                <span class="text-warning">Ongoing</span>
+            @if ($project->status == 'pending')
+                <span class="text-warning">Pending</span>
+            @elseif ($project->status == 'ongoing')
+                <span class="text-primary">Ongoing</span>
             @elseif ($project->status == 'completed')
                 <span class="text-success">Completed</span>
             @endif
@@ -23,15 +25,17 @@
         <div class="d-flex align-items-center justify-content-between">
             <h1 class="h5 mb-0">Documents</h1>
 
-            <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal"
-                data-target="#uploadDocumentModal">
-                <svg class="feather" fill="currentColor" xmlns="http://www.w3.org/2000/svg" height="1em"
-                    viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                    <path
-                        d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
-                </svg>
-                Upload Documents
-            </button>
+            @if (request()->user()->hasRole('admin'))
+                <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal"
+                    data-target="#uploadDocumentModal">
+                    <svg class="feather" fill="currentColor" xmlns="http://www.w3.org/2000/svg" height="1em"
+                        viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <path
+                            d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
+                    </svg>
+                    Upload Documents
+                </button>
+            @endif
         </div>
 
         <div class="modal fade" id="uploadDocumentModal" tabindex="-1" aria-labelledby="uploadDocumentModalLabel"
@@ -69,41 +73,123 @@
     </div>
 
     <div class="mt-3 p-3 rounded bg-white">
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex mb-3 align-items-center justify-content-between">
             <h1 class="h5 mb-0">Bidding Status</h1>
 
-            <form action="" method="post">
-                @csrf
-                <button type="submit" class="btn btn-sm btn-success">
-                    <svg class="feather" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                        <path
-                            d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z" />
-                    </svg>
-                    Start Bidding
-                </button>
-            </form>
+            @if (request()->user()->hasRole('admin'))
+                @if ($project->status == 'pending')
+                    <form action="{{ route('projects.start-bid', $project) }}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <svg class="feather" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path
+                                    d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z" />
+                            </svg>
+                            Start Bidding
+                        </button>
+                    </form>
+                @endif
+            @elseif (request()->user()->hasRole('bidder') && !$project->bidders->contains('id', request()->user()->id))
+                <form action="{{ route('projects.bidders.store', $project) }}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <svg class="feather" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                            <path
+                                d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z" />
+                        </svg>
+                        Join Bid
+                    </button>
+                </form>
+            @endif
         </div>
 
-        <div class="row mt-3">
-            <div class="col-md-4">
-                <p class="text-muted">First Bidding</p>
-                <ul class="list-group">
-                    <li class="list-group-item"></li>
-                </ul>
+        <p class="text-muted mb-2">Bidders</p>
+        <ul class="pl-3">
+            @foreach ($project->bidders as $bidder)
+                <li>{{ $bidder->name }}</li>
+            @endforeach
+        </ul>
+
+        @if (request()->user()->hasRole('admin'))
+            <div class="row mt-4">
+                @if ($project->status == 'ongoing')
+                    <div class="col-md-4">
+                        <p class="text-muted">First Bidding</p>
+                        @if ($project->status == 'ongoing')
+                            <form action="" method="post">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    Proceed to 2nd Bidding
+                                </button>
+                            </form>
+
+                            <button type="button" class="btn mt-2 btn-sm btn-secondary" data-toggle="modal"
+                                data-target="#awardBidModal">
+                                Award Bid
+                            </button>
+                        @endif
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted">Second Bidding</p>
+                        @if ($project->biddingProgress->period == 'second')
+                            <form action="" method="post">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    Proceed to 3rd Bidding
+                                </button>
+                            </form>
+
+                            <button type="button" class="btn mt-2 btn-sm btn-secondary" data-toggle="modal"
+                                data-target="#awardBidModal">
+                                Award Bid
+                            </button>
+                        @endif
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted">Third Bidding</p>
+                        @if ($project->biddingProgress->period == 'second')
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#awardBidModal">
+                                Award Bid
+                            </button>
+                        @endif
+                    </div>
+                @elseif ($project->status == 'pending')
+                    <p class="text-muted">Invitation to Bid has not been released yet.</p>
+                @endif
             </div>
-            <div class="col-md-4">
-                <p class="text-muted">Second Bidding</p>
-                <ul class="list-group">
-                    <li class="list-group-item"></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <p class="text-muted">Third Bidding</p>
-                <ul class="list-group">
-                    <li class="list-group-item"></li>
-                </ul>
+        @endif
+
+        <div class="modal fade" id="awardBidModal" tabindex="-1" aria-labelledby="awardBidModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="awardBidModalLabel">Award Bid</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('projects.award-bid', $project) }}" method="post">
+                            <select name="awardee" id="awardee" class="custom-select">
+                                <option value="">Select option</option>
+                                @foreach ($project->bidders as $bidder)
+                                    <option value="{{ $bidder->id }}">
+                                        {{ $bidder->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                        <div class="mt-3 text-right">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,9 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'ongoing', 'completed'])
-            ->after('title')->default('pending');
+        Schema::create('bidding_progress', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
+            $table->enum('period', ['first', 'second', 'third']);
+            $table->timestamps();
         });
     }
 
@@ -22,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('bidding_progress');
     }
 };

@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AwardBidController;
 use App\Http\Controllers\CompanyCommitteeController;
 use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\CompanyProjectController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProjectBidderController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectDocumentController;
+use App\Http\Controllers\StartBiddingController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,12 +39,27 @@ Route::resource('companies', CompanyController::class)
 Route::resource('companies.committee', CompanyCommitteeController::class)
     ->shallow()->middleware('auth');
 
-Route::get('/projects', [ProjectController::class, 'index'])
-    ->name('projects.index')->middleware('auth');
+Route::post('/projects/{project}/start-bid', StartBiddingController::class)
+    ->name('projects.start-bid')->middleware(['auth', 'role:admin']);
+
+Route::post('/projects/{project}/award-bid', AwardBidController::class)
+    ->name('projects.award-bid')->middleware(['auth', 'role:admin']);
+
+Route::middleware(['auth', 'role:admin|bidder'])->group(function () {
+    Route::get('/projects', [ProjectController::class, 'index'])
+        ->name('projects.index');
+
+    Route::get('/companies/{company}/projects/{project}', [ProjectController::class, 'show'])
+        ->name('companies.projects.show');
+});
 
 Route::resource('companies.projects', ProjectController::class)
-    ->except('index')->middleware('auth');
+    ->except(['index', 'show'])->middleware(['auth', 'role:admin']);
 
-Route::resource('projects.documents', ProjectDocumentController::class)->middleware('auth');
+Route::post('/projects/{project}/bidders', [ProjectBidderController::class, 'store'])
+    ->name('projects.bidders.store')->middleware('auth');
+
+Route::resource('projects.documents', ProjectDocumentController::class)
+    ->middleware('auth');
 
 require __DIR__.'/auth.php';

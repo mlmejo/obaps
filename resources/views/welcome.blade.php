@@ -7,12 +7,12 @@
         @csrf
 
         <div>
-            <label for="email" class="form-label">Email address</label>
+            <label for="email">Email address</label>
             <input type="email" name="email" id="email" class="form-control" required autofocus>
         </div>
 
         <div class="mt-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password">Password</label>
             <input type="password" name="password" id="password" class="form-control" required>
         </div>
 

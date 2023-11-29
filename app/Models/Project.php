@@ -33,4 +33,9 @@ class Project extends Model
             'bidder_id',
         )->withPivot('awardee')->withTimestamps();
     }
+
+    public function biddingProgress()
+    {
+        return $this->hasOne(BiddingProgress::class);
+    }
 }

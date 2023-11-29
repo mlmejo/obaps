@@ -141,14 +141,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Ongoing</th>
+                        <th>Pending/Ongoing</th>
                         <th>Completed</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($company->projects as $project)
                         <tr>
-                            @if ($project->status === 'ongoing')
+                            @if ($project->status == 'ongoing' || $project->status == 'pending')
                                 <td>
                                     <a href="{{ route('companies.projects.show', [$company, $project]) }}">
                                         {{ $project->title }}

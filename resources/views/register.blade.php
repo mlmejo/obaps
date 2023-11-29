@@ -8,23 +8,23 @@
         @csrf
 
         <div>
-            <label for="name" class="form-label">Name</label>
+            <label for="name">Name</label>
             <input type="text" name="name" id="name" class="form-control" required autofocus>
         </div>
 
         <div class="mt-3">
-            <label for="email" class="form-label">Email address</label>
+            <label for="email">Email address</label>
             <input type="email" name="email" id="email" class="form-control" required>
         </div>
 
         <div class="row mt-3">
             <div class="col-md-6">
-                <label for="password" class="form-label">Password</label>
+                <label for="password">Password</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
 
             <div class="col-md-6">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <label for="password_confirmation">Confirm Password</label>
                 <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
                     required>
             </div>
